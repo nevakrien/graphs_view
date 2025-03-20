@@ -11,8 +11,18 @@ GraphNode::GraphNode(QGraphicsItem* parent)
 }
 
 GraphNode::~GraphNode() {
-    for (auto* edge : edges) {
-        delete edge;  // Delete edges when the node is deleted
+    while (!edges.empty()) { 
+        GraphEdge* edge = edges.back();  
+        edges.pop_back();
+
+        //Remove edge from the other node before deleting it
+        if (edge->getSourceNode() == this) {
+            edge->getTargetNode()->removeEdge(edge);
+        } else {
+            edge->getSourceNode()->removeEdge(edge);
+        }
+
+        delete edge;
     }
 }
 
