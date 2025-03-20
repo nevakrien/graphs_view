@@ -1,20 +1,20 @@
 #include "GraphEdge.hpp"
 
-
 GraphEdge::GraphEdge(GraphNode* sourceNode, GraphNode* targetNode)
     : source(sourceNode), target(targetNode) {
     setPen(QPen(Qt::black, 2));
     updatePosition();
+    setZValue(-1);  // ✅ Keep edges behind nodes
 }
 
 GraphEdge::~GraphEdge() {
-    if (source) source->removeEdge(this);
     if (target) target->removeEdge(this);
+    if (source) source->removeEdge(this);
 }
 
 void GraphEdge::updatePosition() {
     if (source && target) {
-        setLine(QLineF(source->pos(), target->pos()));  // ✅ Update edge position when nodes move
+        setLine(QLineF(source->pos(), target->pos()));
     }
 }
 
@@ -23,4 +23,43 @@ void GraphEdge::mousePressEvent(QGraphicsSceneMouseEvent* event) {
         scene()->removeItem(this);
         delete this;
     }
+}
+
+/**
+ * @brief Computes the shortest distance from a point to a line segment.
+ *
+ * @param point The point in question.
+ * @param lineStart The start of the line segment.
+ * @param lineEnd The end of the line segment.
+ * @return The perpendicular distance from `point` to the segment.
+ */
+static qreal distanceToSegment(const QPointF& point, const QPointF& lineStart, const QPointF& lineEnd) {
+    QLineF line(lineStart, lineEnd);
+    
+    if (line.length() == 0.0) {
+        return QLineF(point, lineStart).length(); // If the segment is a single point
+    }
+
+    // Compute the projection factor `t` (normalized position on segment)
+    QPointF lineVec = lineEnd - lineStart;
+    QPointF pointVec = point - lineStart;
+
+    qreal t = QPointF::dotProduct(pointVec, lineVec) / QPointF::dotProduct(lineVec, lineVec);
+
+    // Clamp `t` to stay within the segment
+    t = std::max(0.0, std::min(1.0, t));
+
+    // Compute the closest point on the segment
+    QPointF closestPoint = lineStart + t * lineVec;
+
+    // Return the distance from the point to the closest point on the segment
+    return QLineF(point, closestPoint).length();
+}
+
+// ✅ Implement the function correctly
+bool GraphEdge::contains(const QPointF &point) const {    
+    // ✅ Calculate distance from point to edge
+    qreal distance = distanceToSegment(point,source->pos(), target->pos());
+    
+    return distance < 10.0;  // ✅ If near enough, consider it selected
 }

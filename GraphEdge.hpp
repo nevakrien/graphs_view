@@ -5,6 +5,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QPen>
 #include <QGraphicsScene>
+#include <cmath>
 
 #include "GraphNode.hpp"
 
@@ -16,6 +17,8 @@ public:
     void updatePosition();  // Called when nodes move
     GraphNode* getSourceNode() const { return source; }
     GraphNode* getTargetNode() const { return target; }
+
+     bool contains(const QPointF& point) const override;
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent* event) override;

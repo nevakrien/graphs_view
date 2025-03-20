@@ -40,21 +40,28 @@ void GraphNode::notifyEdges() {
     }
 }
 
+/// mouse handeling
+
 void GraphNode::mousePressEvent(QGraphicsSceneMouseEvent* event) {
-    setBrush(QBrush(Qt::yellow));  // Highlight when selected
+    setBrush(QBrush(Qt::yellow));  // ✅ Highlight when clicked
     QGraphicsEllipseItem::mousePressEvent(event);
 }
 
 void GraphNode::mouseMoveEvent(QGraphicsSceneMouseEvent* event) {
-    setBrush(QBrush(Qt::blue));
-    notifyEdges();  // ✅ Update edges when moved
+    notifyEdges();  // ✅ Ensure edges update
     QGraphicsEllipseItem::mouseMoveEvent(event);
 }
+
+void GraphNode::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
+    setBrush(QBrush(Qt::blue));  // ✅ Reset color when released
+    QGraphicsEllipseItem::mouseReleaseEvent(event);
+}
+
 
 void GraphNode::contextMenuEvent(QGraphicsSceneContextMenuEvent* event) {
     QMenu menu;
     QAction* deleteAction = menu.addAction("Delete Node");
-    QAction* connectAction = menu.addAction("Connect Edge");
+    // QAction* connectAction = menu.addAction("Connect Edge");
 
     QAction* selectedAction = menu.exec(event->screenPos());
     
@@ -62,7 +69,7 @@ void GraphNode::contextMenuEvent(QGraphicsSceneContextMenuEvent* event) {
         scene()->removeItem(this);
         delete this;
     } 
-    else if (selectedAction == connectAction) {
-        scene()->addItem(new GraphEdge(this, nullptr));  // Start edge connection
-    }
+    // else if (selectedAction == connectAction) {
+    //     scene()->addItem(new GraphEdge(this, nullptr));  // Start edge connection
+    // }
 }
