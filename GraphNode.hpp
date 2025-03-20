@@ -9,7 +9,9 @@
 #include <QGraphicsScene>
 #include <cmath>
 
+
 class GraphEdge;
+class GraphScene;
 
 class GraphNode : public QObject, public QGraphicsEllipseItem {
     Q_OBJECT

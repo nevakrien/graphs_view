@@ -18,14 +18,13 @@ public:
     explicit GraphScene(QObject* parent = nullptr);
     virtual ~GraphScene() override;
 
-public slots:
+    GraphNode* selectedNode = nullptr;
+    
     void handleConnection(GraphNode* node);
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
 
-private:
-    GraphNode* selectedNode = nullptr;
 };
 
 #endif

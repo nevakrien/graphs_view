@@ -3,6 +3,8 @@
 #include <QGraphicsScene>
 #include <QGraphicsSceneContextMenuEvent>
 
+#include "GraphScene.hpp"
+
 GraphNode::GraphNode(QGraphicsItem* parent) 
     : QGraphicsEllipseItem(-10, -10, 20, 20, parent) {
     setBrush(QBrush(Qt::blue));
@@ -11,20 +13,31 @@ GraphNode::GraphNode(QGraphicsItem* parent)
 }
 
 GraphNode::~GraphNode() {
-    while (!edges.empty()) { 
-        GraphEdge* edge = edges.back();  
+    //deselect me
+    GraphScene* graphScene = dynamic_cast<GraphScene*>(scene());
+    if (graphScene && graphScene->selectedNode == this) {
+        graphScene->selectedNode = nullptr;
+    }
+
+    //Remove all edges safely
+    while (!edges.empty()) {
+        GraphEdge* edge = edges.back();
         edges.pop_back();
 
-        //Remove edge from the other node before deleting it
         if (edge->getSourceNode() == this) {
-            edge->getTargetNode()->removeEdge(edge);
+            if (edge->getTargetNode()) {
+                edge->getTargetNode()->removeEdge(edge);
+            }
         } else {
-            edge->getSourceNode()->removeEdge(edge);
+            if (edge->getSourceNode()) {
+                edge->getSourceNode()->removeEdge(edge);
+            }
         }
 
         delete edge;
     }
 }
+
 
 void GraphNode::addEdge(GraphEdge* edge) {
     edges.push_back(edge);
