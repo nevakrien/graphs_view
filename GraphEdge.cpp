@@ -4,8 +4,9 @@ GraphEdge::GraphEdge(GraphNode* sourceNode, GraphNode* targetNode)
     : source(sourceNode), target(targetNode) {
     assert(sourceNode&&targetNode&&targetNode!=sourceNode);
     setPen(QPen(Qt::black, 2));
-    updatePosition();
     setZValue(-1);
+    updatePosition();
+    
 }
 
 GraphEdge::~GraphEdge() {
