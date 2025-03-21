@@ -12,8 +12,6 @@ int main(int argc, char *argv[]) {
     view->setRenderHint(QPainter::Antialiasing);
     view->setSceneRect(0, 0, 800, 600);
 
-    // ✅ Connect GraphNode signal to GraphScene slot
-    QObject::connect(scene, &GraphScene::handleConnection, scene, &GraphScene::handleConnection);
 
     QWidget window;
     QVBoxLayout* layout = new QVBoxLayout();

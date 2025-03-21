@@ -22,6 +22,9 @@ public:
     
     void handleConnection(GraphNode* node);
 
+    void selectNode(GraphNode* node);
+
+
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
 

@@ -5,6 +5,13 @@ GraphScene::GraphScene(QObject* parent) : QGraphicsScene(parent), selectedNode(n
 
 GraphScene::~GraphScene() {}
 
+void GraphScene::selectNode(GraphNode* node){
+    if(selectedNode) selectedNode->setSelected(false);
+    if(node) node->setSelected(true);
+
+    selectedNode = node;
+}
+
 void GraphScene::mousePressEvent(QGraphicsSceneMouseEvent* event) {
     QGraphicsItem* item = itemAt(event->scenePos(), QTransform());
 
@@ -13,22 +20,26 @@ void GraphScene::mousePressEvent(QGraphicsSceneMouseEvent* event) {
             auto* node = new GraphNode();
             node->setPos(event->scenePos());
             addItem(node);
-            connect(node, &GraphNode::requestConnection, this, &GraphScene::handleConnection);
+            selectNode(node);
+
+            // connect(node, &GraphNode::requestConnection, this, &GraphScene::handleConnection);
         } 
         else if (auto* node = dynamic_cast<GraphNode*>(item)) {
             if (!selectedNode) {
-                selectedNode = node;  // ✅ First node selected
+                selectNode(node);
             } else {
-                // ✅ Second node clicked, create edge
+                //Second node clicked, create edge
                 auto* edge = new GraphEdge(selectedNode, node);
                 addItem(edge);
                 selectedNode->addEdge(edge);
                 node->addEdge(edge);
-                selectedNode = nullptr;  // ✅ Reset selection
+                selectNode(nullptr);
             }
         }
     } 
     else if (event->button() == Qt::RightButton) {
+        selectNode(nullptr);
+
         if (auto* edge = dynamic_cast<GraphEdge*>(item)) {
             removeItem(edge);
             delete edge;
@@ -43,11 +54,10 @@ void GraphScene::handleConnection(GraphNode* node) {
     if (!selectedNode) {
         selectedNode = node;
     } else {
-        // ✅ Create an edge only if explicitly requested
         auto* edge = new GraphEdge(selectedNode, node);
         addItem(edge);
         selectedNode->addEdge(edge);
         node->addEdge(edge);
-        selectedNode = nullptr;
+        selectNode(nullptr);
     }
 }

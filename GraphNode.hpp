@@ -24,6 +24,7 @@ public:
     void removeEdge(GraphEdge* edge);
     void notifyEdges();  // Updates edges when the node moves
 
+    void setSelected(bool b);
 signals:
     void requestConnection(GraphNode* node);
 
@@ -34,7 +35,10 @@ protected:
 
     void contextMenuEvent(QGraphicsSceneContextMenuEvent* event) override;  // Right-click menu
 
+    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget);
+
 private:
+    // bool selected = false;
     std::vector<GraphEdge*> edges;
 };
 

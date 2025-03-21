@@ -9,7 +9,7 @@ GraphNode::GraphNode(QGraphicsItem* parent)
     : QGraphicsEllipseItem(-10, -10, 20, 20, parent) {
     setBrush(QBrush(Qt::blue));
     setFlag(QGraphicsItem::ItemIsMovable);
-    setFlag(QGraphicsItem::ItemIsSelectable);
+    // setFlag(QGraphicsItem::ItemIsSelectable);
 }
 
 GraphNode::~GraphNode() {
@@ -53,20 +53,48 @@ void GraphNode::notifyEdges() {
     }
 }
 
+void GraphNode::setSelected(bool b){
+    if(b){
+        setBrush(QBrush(Qt::yellow));
+    } else {
+        setBrush(QBrush(Qt::blue));
+    }
+
+    update();
+}
+
+void GraphNode::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
+    Q_UNUSED(widget);
+
+    // // Change color based on selection state
+    // if (selected) {
+    //     painter->setBrush(Qt::yellow);
+    // } else {
+    //     painter->setBrush(Qt::blue);
+    // }
+
+    painter->setBrush(brush());
+    painter->setPen(QPen(Qt::black, 2));
+    painter->drawEllipse(rect());
+}
+
+
 /// mouse handeling
 
 void GraphNode::mousePressEvent(QGraphicsSceneMouseEvent* event) {
-    setBrush(QBrush(Qt::yellow));  // ✅ Highlight when clicked
+    // setBrush(QBrush(Qt::yellow));  //Highlight when clicked
     QGraphicsEllipseItem::mousePressEvent(event);
 }
 
 void GraphNode::mouseMoveEvent(QGraphicsSceneMouseEvent* event) {
-    notifyEdges();  // ✅ Ensure edges update
     QGraphicsEllipseItem::mouseMoveEvent(event);
+    notifyEdges();  //Ensure edges update
+
 }
 
 void GraphNode::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
-    setBrush(QBrush(Qt::blue));  // ✅ Reset color when released
+    // setBrush(QBrush(Qt::blue));  //Reset color when released
+    // setSelected(false);
     QGraphicsEllipseItem::mouseReleaseEvent(event);
 }
 

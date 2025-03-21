@@ -56,10 +56,8 @@ static qreal distanceToSegment(const QPointF& point, const QPointF& lineStart, c
     return QLineF(point, closestPoint).length();
 }
 
-// ✅ Implement the function correctly
 bool GraphEdge::contains(const QPointF &point) const {    
-    // ✅ Calculate distance from point to edge
     qreal distance = distanceToSegment(point,source->pos(), target->pos());
     
-    return distance < 10.0;  // ✅ If near enough, consider it selected
+    return distance < 10.0;  //If near enough, consider it selected
 }
