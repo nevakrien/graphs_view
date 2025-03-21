@@ -19,37 +19,52 @@ GraphNode::~GraphNode() {
         graphScene->selectedNode = nullptr;
     }
 
-    //Remove all edges safely
-    while (!edges.empty()) {
-        GraphEdge* edge = edges.back();
-        edges.pop_back();
+    //copy so we dont get weird stuff with destructors
+    std::vector<GraphEdge*> toDelete;
+    for (auto& pair : connections) {
+        toDelete.push_back(pair.second);
+    }
 
-        if (edge->getSourceNode() == this) {
-            if (edge->getTargetNode()) {
-                edge->getTargetNode()->removeEdge(edge);
-            }
-        } else {
-            if (edge->getSourceNode()) {
-                edge->getSourceNode()->removeEdge(edge);
-            }
+    for (GraphEdge* edge : toDelete) {
+        GraphNode* other = (edge->getSourceNode() == this) ? edge->getTargetNode() : edge->getSourceNode();
+        if (other) {
+            other->removeEdge(edge);
         }
-
         delete edge;
     }
+
+    connections.clear();
 }
 
 
 void GraphNode::addEdge(GraphEdge* edge) {
-    edges.push_back(edge);
+    GraphNode* other = (edge->getSourceNode() == this) ? edge->getTargetNode() : edge->getSourceNode();
+    if (other) {
+        connections[other] = edge;
+    }
 }
 
 void GraphNode::removeEdge(GraphEdge* edge) {
-    edges.erase(std::remove(edges.begin(), edges.end(), edge), edges.end());
+    GraphNode* other = (edge->getSourceNode() == this) ? edge->getTargetNode() : edge->getSourceNode();
+    if (other) {
+        auto it = connections.find(other);
+        if (it != connections.end() && it->second == edge) {
+            connections.erase(it);
+        }
+    }
+}
+
+
+GraphEdge* GraphNode::getEdgeTo(GraphNode* other) const {
+    auto it = connections.find(other);
+    return (it != connections.end()) ? it->second : nullptr;
 }
 
 void GraphNode::notifyEdges() {
-    for (auto* edge : edges) {
-        edge->updatePosition();
+    for (const auto& [otherNode, edge] : connections) {
+        if (edge) {
+            edge->updatePosition();
+        }
     }
 }
 

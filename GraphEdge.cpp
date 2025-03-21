@@ -2,9 +2,10 @@
 
 GraphEdge::GraphEdge(GraphNode* sourceNode, GraphNode* targetNode)
     : source(sourceNode), target(targetNode) {
+    assert(sourceNode&&targetNode&&targetNode!=sourceNode);
     setPen(QPen(Qt::black, 2));
     updatePosition();
-    setZValue(-1);  // ✅ Keep edges behind nodes
+    setZValue(-1);
 }
 
 GraphEdge::~GraphEdge() {

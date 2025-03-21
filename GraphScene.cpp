@@ -27,7 +27,7 @@ void GraphScene::mousePressEvent(QGraphicsSceneMouseEvent* event) {
         else if (auto* node = dynamic_cast<GraphNode*>(item)) {
             if (!selectedNode) {
                 selectNode(node);
-            } else {
+            } else if(node!=selectedNode && !node->getEdgeTo(selectedNode)){
                 //Second node clicked, create edge
                 auto* edge = new GraphEdge(selectedNode, node);
                 addItem(edge);
@@ -47,19 +47,6 @@ void GraphScene::mousePressEvent(QGraphicsSceneMouseEvent* event) {
     }
 
     QGraphicsScene::mousePressEvent(event);
-}
-
-
-void GraphScene::handleConnection(GraphNode* node) {
-    if (!selectedNode) {
-        selectedNode = node;
-    } else {
-        auto* edge = new GraphEdge(selectedNode, node);
-        addItem(edge);
-        selectedNode->addEdge(edge);
-        node->addEdge(edge);
-        selectNode(nullptr);
-    }
 }
 
 //serilizing

@@ -26,7 +26,6 @@ public:
 
     GraphNode* selectedNode = nullptr;
     
-    void handleConnection(GraphNode* node);
 
     void selectNode(GraphNode* node);
 

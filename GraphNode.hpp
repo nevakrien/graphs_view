@@ -25,6 +25,8 @@ public:
     void notifyEdges();  // Updates edges when the node moves
 
     void setSelected(bool b);
+    GraphEdge* getEdgeTo(GraphNode* other) const;
+    
 signals:
     void requestConnection(GraphNode* node);
 
@@ -38,8 +40,7 @@ protected:
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget);
 
 private:
-    // bool selected = false;
-    std::vector<GraphEdge*> edges;
+    std::unordered_map<GraphNode*, GraphEdge*> connections;
 };
 
 #endif
