@@ -6,7 +6,13 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsView>
 #include <QMessageBox>
-#include <QMessageBox>
+
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QFile>
+#include <QMap>
+#include <QKeyEvent>
 
 #include "GraphNode.hpp"
 #include "GraphEdge.hpp"
@@ -24,10 +30,12 @@ public:
 
     void selectNode(GraphNode* node);
 
+    void saveToJson(const QString& filename);
+    void loadFromJson(const QString& filename);
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
-
+    void keyPressEvent(QKeyEvent* event) override;
 };
 
 #endif
